@@ -1,0 +1,59 @@
+# ============================================================
+# Phoenix — Default Configuration
+# ============================================================
+
+# ----- Experiment metadata -----
+experiment:
+  name: "phoenix_default"
+  seed: 42
+  n_episodes: 10
+  max_steps_per_episode: 50
+  planning_budget: 5          # max Planner→Verifier iterations per step
+  dry_run: false              # if true, skip LLM calls; use stub responses
+
+# ----- Environment -----
+env:
+  name: "FetchPickAndPlace-v2"   # any gymnasium-robotics env id
+  render_mode: null              # null | "human" | "rgb_array"
+  obs_as_text: true              # serialize obs dict to text for LLM context
+
+# ----- Active agents -----
+# Set to false to disable an agent (drives ablation experiments)
+agents:
+  policy: true
+  knowledge: true
+  planner: true
+  verifier: true
+
+# ----- LLM backend -----
+llm:
+  backend: "openai"              # openai | anthropic | ollama
+  model: "gpt-4o"
+  temperature: 0.0
+  max_tokens: 1024
+  # For openai: set OPENAI_API_KEY in .env
+  # For anthropic: set ANTHROPIC_API_KEY in .env
+  # For ollama: set base_url below
+  # base_url: "http://localhost:11434/v1"
+
+# ----- Planner backend -----
+planner:
+  backend: "llm"               # llm | mcts | graph
+  mcts:
+    n_simulations: 50
+    exploration_constant: 1.41
+    max_depth: 10
+  graph:
+    knowledge_graph_path: null  # path to pre-built NetworkX graph (pickle)
+
+# ----- Metrics -----
+metrics:
+  track_tokens: true
+  track_cost: true              # estimate based on model pricing
+  track_timing: true
+  save_episode_traces: true     # save full plan/verify/act traces per episode
+
+# ----- Output -----
+output:
+  results_dir: "results"
+  format: ["json", "csv"]       # both JSON and CSV summary

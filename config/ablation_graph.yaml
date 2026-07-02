@@ -1,0 +1,14 @@
+# Ablation: Knowledge-graph planner backend
+experiment:
+  name: "ablation_graph"
+
+agents:
+  policy: true
+  knowledge: true
+  planner: true
+  verifier: true
+
+planner:
+  backend: "graph"
+  graph:
+    knowledge_graph_path: null   # set to .pkl path if pre-built graph available

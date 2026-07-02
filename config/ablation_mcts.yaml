@@ -1,0 +1,16 @@
+# Ablation: MCTS planner backend
+experiment:
+  name: "ablation_mcts"
+
+agents:
+  policy: true
+  knowledge: true
+  planner: true
+  verifier: true
+
+planner:
+  backend: "mcts"
+  mcts:
+    n_simulations: 50
+    exploration_constant: 1.41
+    max_depth: 10

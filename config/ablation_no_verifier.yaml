@@ -1,0 +1,13 @@
+# Ablation: Planner only (no verifier)
+# Inherits all defaults from default.yaml, overrides only changed keys.
+experiment:
+  name: "ablation_no_verifier"
+
+agents:
+  policy: true
+  knowledge: true
+  planner: true
+  verifier: false          # ← disabled
+
+planner:
+  backend: "llm"

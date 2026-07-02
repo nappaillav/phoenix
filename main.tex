@@ -1,0 +1,189 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage{template,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+
+
+\title{Hierarchical LLM-Guided Planning for Complex Robotic Manipulation}
+
+
+
+\author{Valliappan Chidambaram Adaikkappan\\
+McGill University, Mila--Qu\'{e}bec AI Institute\\
+\texttt{firstname.lastname@mail.mcgill.ca} \\
+}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\final % Uncomment for camera-ready version
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+% Large Language Models (LLMs) have demonstrated remarkable planning capabilities for robotic manipulation, yet existing approaches struggle with tasks that require long-horizon reasoning and robust failure recovery.
+% In this work, we propose a hierarchical planning framework in which an LLM-based Policy Agent decomposes complex manipulation tasks into sub-goals, a structured Planner (based on MCTS or graph-based search) selects and sequences those sub-goals, and a (code-based) Verifier Agent validates each step before physical execution.
+% We investigate when and why LLM planners fail - particularly on out-of-distribution tasks-and show how pairing LLM reasoning with an explicit search-based planner and a verifier addresses these failure modes.
+% We evaluate our system on challenging manipulation benchmarks and demonstrate improvements in task success rate, sample efficiency, and token efficiency over strong baselines.
+\end{abstract}
+
+\section{Introduction}
+In this work, we investigate the limitations of hierarchical planning frameworks for robotic manipulation that leverage Large Language Models (LLMs) as high-level planners. While LLMs possess extensive world knowledge and demonstrate strong capabilities in task decomposition and commonsense reasoning, it remains unclear whether these abilities are sufficient to solve complex manipulation tasks. We aim to understand why LLM-driven manipulation systems often fail, identify the underlying causes of these failures, and explore directions for improving their performance.
+
+Large Language Models (LLMs) have shown promising planning capabilities for robotic manipulation, significantly advancing the development of embodied intelligence. However, existing LLM-driven manipulation approaches primarily excel at simple pick-and-place tasks and struggle to generalize to more complex manipulation scenarios. A key limitation is the reliance on inaccurate or incomplete procedural knowledge, which can lead to suboptimal task decomposition, incorrect action sequencing, and failure to adapt to dynamic environments.
+
+
+\section{Related work}
+\textit{Code as Policy} \cite{code_policy} : This paper presents code as policies: a robot-centric formulation of language model generated programs (LMPs) that can represent reactive policies (e.g., impedance controllers), as well as waypoint-based policies (vision-based pick and place, trajectory-based control), demonstrated across multiple real robot platforms. \textit{A Roadmap to Guide the Integration of LLMs in Hierarchical Planning} \cite{roadmap_llm_hp}: we propose a roadmap to address this gap and harness the potential of LLMs for HP. To this end, we present a taxonomy of integration methods, exploring how LLMs can be utilized within the HP life cycle. \textit{Enhancing LLM Planning for Robotics Manipulation through Hierarchical Procedural Knowledge Graphs} \cite{knowledge_graph} propose Hierarchical Procedural Knowledge Graphs (\textbf{HP-KG}) to enhance LLMs for complex robotic planning while significantly reducing the demand for LLM scale in robotic manipulation.   
+
+\section{Outline}
+
+The central idea of this work is to use planning in a more structured and effective manner for robotic manipulation tasks. Rather than relying solely on an LLM to generate actions, we decompose the system into specialized agents that contribute complementary capabilities.
+
+\subsection{Policy Agent}
+
+The Policy Agent is responsible for executing actions in the environment. It operates based on guidance from both the Reasoning Agent and the Knowledge Agent, translating high-level plans into executable behaviors.
+
+\subsection{Knowledge Agent}
+
+The Knowledge Agent maintains procedural and semantic knowledge about objects, environments, and task relationships. It provides contextual information that helps the planner reason about task dependencies, object affordances, and potential action outcomes.
+
+\subsection{Planner Agent}
+
+The Planner Agent performs reasoning and task decomposition. It may be implemented using a knowledge graph, Monte Carlo Tree Search (MCTS), or other graph-based search methods. The planner predicts future states, evaluates possible action sequences, and constructs plans that connect intermediate subgoals to the final objective.
+
+\subsection{Verifier Agent}
+
+The Verifier Agent evaluates proposed plans before execution. Given a candidate action sequence, it determines whether the plan is feasible, consistent, and likely to achieve the desired goal. The verifier serves as a safety and quality-control mechanism, reducing execution failures caused by incorrect reasoning.
+
+\subsection{Planning and Verification Loop}
+
+The overall framework follows an iterative planning-verification process. The planner generates candidate plans, which are subsequently evaluated by the verifier. Only plans that satisfy verification criteria are executed by the policy agent. This approach shifts computational effort toward high-level reasoning and verification rather than expensive visual generation.
+
+For visual manipulation tasks, generating full image trajectories is computationally prohibitive. Instead, the system should perform low-level symbolic or state-based planning while relying on the verifier to assess feasibility. This allows planning to remain efficient while maintaining robustness in complex manipulation scenarios.
+
+\section{Research Questions}
+
+\textbf{RQ1: Out-of-Distribution Generalization}
+
+How effectively can the system solve tasks that require reasoning over unseen object relationships, knowledge graphs, or previously unencountered task compositions?
+
+\textbf{RQ2: Sample and Token Efficiency}
+
+Can the proposed planning and verification framework improve sample efficiency while simultaneously reducing token usage during inference and planning?
+
+\textbf{RQ3: Efficient Inference-Time Planning}
+
+Can strong planning performance emerge purely from inference-time computation? Furthermore, can relatively small language models, when equipped with structured planning and verification mechanisms, achieve performance comparable to larger models?
+
+\textbf{RQ4: Visual Reasoning and Planning}
+
+How can the framework handle manipulation tasks that require complex visual reasoning and planning, where errors compound over multiple decision steps?
+
+\section{Challenges and Blockers}
+
+\subsection{Environment State Initialization}
+
+A major challenge is evaluating hypothetical plans from intermediate states. This requires the ability to reset the environment to arbitrary locations or states generated during planning. Many robotic environments do not support such state restoration, making plan verification difficult.
+
+\subsection{Verifier Construction}
+
+Building a reliable verifier is non-trivial. The verifier must accurately assess whether a plan is feasible without executing it in the real environment. Developing a coding-based verifier and collecting representative examples for training and evaluation remain open challenges.
+
+\subsection{Computational Cost of Visual Reasoning}
+
+Running large multimodal models for repeated visual reasoning can be prohibitively expensive. Continuous image generation or simulation-based rollouts are unlikely to scale efficiently. Alternative approaches that operate on compact state representations or symbolic abstractions are needed.
+
+\subsection{Internal World Modeling}
+
+The system may need to rely on internally generated predictions rather than direct environment interaction. However, inaccuracies in these internal models can accumulate over long planning horizons, leading to verification errors and execution failures. [verifier agent can fix this if its reliable enough]
+
+
+\section{TODO}
+
+\subsection{Plan of Experiments}
+
+Evaluate the proposed Planner--Verifier framework on tasks that require reasoning, planning, and knowledge usage. The experiments should focus on understanding when structured planning helps and when it fails.
+
+Evaluation environments may include:
+
+\begin{itemize}
+\item Manipulation tasks.
+\item Maze and navigation tasks.
+\item Text-based reasoning environments.
+\item ARC-AGI tasks.
+\item Sudoku and other planning-oriented benchmarks.
+\end{itemize}
+
+\subsection{Metrics}
+
+The following metrics will be reported:
+
+\begin{itemize}
+\item Task success rate.
+\item Plan accuracy.
+\item Verifier accuracy.
+\item Number of planning steps.
+\item Sample efficiency.
+\item Token efficiency.
+\item Inference cost.
+\item Generalization performance.
+\end{itemize}
+
+\subsection{Analysis and Ablations}
+
+We will study the contribution of each component through ablation experiments:
+
+\begin{itemize}
+\item Planner only vs Planner + Verifier.
+\item Different planning methods (Knowledge Graph, MCTS, Graph Search).
+\item Different language model sizes.
+\item With and without external knowledge.
+\item Different verifier designs.
+\item Different planning budgets.
+\end{itemize}
+
+We will also analyze common failure cases and understand where planning or verification breaks down.
+
+\subsection{Baselines}
+
+The proposed method will be compared against:
+
+\begin{itemize}
+\item VoxPoser
+\item RVT
+\item MA-11
+\item Direct LLM-based planning methods
+\end{itemize}
+
+\subsection{Generalization}
+
+Evaluate whether the system can generalize to:
+
+\begin{itemize}
+\item Unseen environments.
+\item New maze layouts.
+\item Novel task compositions.
+\item ARC-AGI tasks.
+\item Text mazes.
+\item Sudoku puzzles.
+\end{itemize}
+
+The goal is to understand whether planning and verification improve performance on tasks that require reasoning beyond memorized solutions.
+
+\bibliography{reference}
+\bibliographystyle{bib_style}
+
+\appendix
+\section{Appendix}
+You may include other additional sections here.
+
+
+\end{document}

@@ -1,0 +1,11 @@
+gymnasium>=0.29.0
+gymnasium-robotics>=1.3.0
+numpy>=1.24.0
+openai>=1.30.0
+anthropic>=0.25.0
+pyyaml>=6.0
+rich>=13.0.0          # pretty terminal output
+pandas>=2.0.0         # metrics CSV export
+networkx>=3.0         # knowledge graph / graph planner
+tqdm>=4.66.0
+python-dotenv>=1.0.0
