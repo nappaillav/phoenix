@@ -80,7 +80,7 @@ results/*.pkl
 # Logs
 *.log
 logs/
-
+*.tex 
 # MuJoCo / rendering
 *.mp4
 *.gif
