@@ -29,7 +29,7 @@ ENV/
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
-.tex
+main.tex
 # Distribution / packaging
 pip-wheel-metadata/
 share/python-wheels/
