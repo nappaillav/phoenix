@@ -86,7 +86,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--config",
-        default="config/default.yaml",
+        # default="/usr/local/data/vchida/wm_research/phoenix/config/default.yaml",
+        default="/usr/local/data/vchida/wm_research/phoenix/config/ablation_no_verifier.yaml",
         help="Path to YAML config file (default: config/default.yaml)",
     )
     parser.add_argument(

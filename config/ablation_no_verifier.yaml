@@ -2,12 +2,30 @@
 # Inherits all defaults from default.yaml, overrides only changed keys.
 experiment:
   name: "ablation_no_verifier"
+  seed: 42
+  n_episodes: 10
+  max_steps_per_episode: 50
+  # planning_budget: 5          # max Planner→Verifier iterations per step
+  # dry_run: false              # if true, skip LLM calls; use stub responses
+
+# ----- Environment -----
+env:
+  name: "FetchReachDense-v4"   # any gymnasium-robotics env id
+  render_mode: null              # null | "human" | "rgb_array"
+  obs_as_text: true              # serialize obs dict to text for LLM context
 
 agents:
   policy: true
-  knowledge: true
-  planner: true
+  knowledge: false
+  planner: false
   verifier: false          # ← disabled
 
 planner:
   backend: "llm"
+
+# ----- LLM backend -----
+llm:
+  backend: "openai"              # openai | anthropic | ollama
+  model: "gpt-4o-mini"
+  temperature: 0.0
+  max_tokens: 1024

@@ -51,6 +51,8 @@ class Evaluator:
             seed=cfg["experiment"].get("seed", 42),
             render_mode=env_cfg.get("render_mode"),
             obs_as_text=env_cfg.get("obs_as_text", True),
+            save_video=env_cfg.get("save_video", False),
+            video_dir=env_cfg.get("video_dir"),
         )
 
         # Build active agents
@@ -304,12 +306,13 @@ class Evaluator:
     # ------------------------------------------------------------------
 
     def _extract_task(self, info: dict, obs: Any) -> str:
-        """Extract a human-readable task description from env info."""
-        if isinstance(obs, dict) and "desired_goal" in obs:
-            import numpy as np
-            goal = obs["desired_goal"]
-            return f"Move end-effector/object to goal position {np.array2string(goal, precision=3)}"
-        return f"Complete the {self.cfg['env']['name']} task."
+        """Return the environment's task description for agent prompts.
+
+        Delegates to ``env.task_description`` (which does a prefix lookup in
+        ``ENV_TASK_DESCRIPTIONS``) so we get a rich, env-specific sentence
+        rather than a raw goal array or a generic fallback.
+        """
+        return self.env.task_description
 
     def _extract_goal(self, info: dict, obs: Any) -> str:
         """Extract goal description for prompts."""

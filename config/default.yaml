@@ -7,15 +7,17 @@ experiment:
   name: "phoenix_default"
   seed: 42
   n_episodes: 10
-  max_steps_per_episode: 50
+  max_steps_per_episode: 100
   planning_budget: 5          # max Planner→Verifier iterations per step
   dry_run: false              # if true, skip LLM calls; use stub responses
 
 # ----- Environment -----
 env:
-  name: "FetchPickAndPlace-v2"   # any gymnasium-robotics env id
+  name: "FetchPickAndPlaceDense-v4"   # any gymnasium-robotics env id
   render_mode: null              # null | "human" | "rgb_array"
   obs_as_text: true              # serialize obs dict to text for LLM context
+  save_video: false              # record episodes as MP4 (forces rgb_array mode)
+  video_dir: null                # null → videos/<env_id>/; or explicit path
 
 # ----- Active agents -----
 # Set to false to disable an agent (drives ablation experiments)
@@ -28,7 +30,7 @@ agents:
 # ----- LLM backend -----
 llm:
   backend: "openai"              # openai | anthropic | ollama
-  model: "gpt-4o"
+  model: "gpt-4o-mini"
   temperature: 0.0
   max_tokens: 1024
   # For openai: set OPENAI_API_KEY in .env
